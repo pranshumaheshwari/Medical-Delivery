@@ -1,0 +1,17 @@
+{
+  "name": "medicalDelivery",
+  "displayName": "medical Delivery",
+  "expo": {
+    "name": "medicalDelivery",
+    "slug": "medicalDelivery",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
