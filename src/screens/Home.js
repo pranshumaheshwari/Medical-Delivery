@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
-import { useGlobal } from 'reactn';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
-import { Button, Block, Text, theme } from 'galio-framework';
+import { Button, Block, Text, theme, Input } from 'galio-framework';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { materialTheme, CLOUDINARY_API } from '../constants/'
-
+import { getToken } from '../helper'
 
 const { width } = Dimensions.get("screen")
-const ref = firestore().collection('orders')
 
-async function uploadImage(URI, uid) {
+async function uploadImage(URI, user, address) {
 	const data = new FormData()
 	data.append('file', URI)
 	data.append('upload_preset', CLOUDINARY_API.PRESET)
@@ -22,9 +20,13 @@ async function uploadImage(URI, uid) {
 	}).then(res => res.json())
 	  	.then(data => data.secure_url)
 	  	.then(async remoteURI => {
-			await ref.add({
-				uid: "abc",
-				remoteURI: "aa",
+			let d = new Date();
+			await firestore().collection('Orders').add({
+				uid: user.uid,
+				remoteURI,
+				contact: user.phoneNumber,
+				address,
+				orderDate: `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}  ${d.getHours()}:${d.getMinutes()}`
 			})
 			return remoteURI;
 	  })
@@ -34,14 +36,21 @@ async function uploadImage(URI, uid) {
 
 export default function Home({navigation}) {
 
-	const [user, _] = useGlobal('user');
+	const [user, setUser] = useState();
 	const [localURI, setLocalURI] = useState('')
 	const [localURIBase64, setLocalURIBase64] = useState('')
 	const [selected, setSelected] = useState(false)
+	const [submitted, setSubmitted] = useState(false)
 	const [remoteURI, setRemoteURI] = useState('')
+	const [address, setAddress] = useState({})
+
+	useEffect(() => {
+		getToken().then(user => {
+			setUser(user);
+		})
+	}, [])
 
 	if(!selected) {
-
 		return (
 		  <Block flex style={styles.container}>
 			<StatusBar barStyle="light-content" />
@@ -102,10 +111,7 @@ export default function Home({navigation}) {
 						</Block>
 						<Button
 						style={{position: 'absolute', bottom: theme.SIZES.BASE}}
-						onPress={async () => {
-							setSelected(true)
-							setRemoteURI(await uploadImage(localURIBase64, user.uid))
-						}}
+						onPress={() => {setSelected(true)}}
 						>Continue</Button>
 					</>
 				)}
@@ -113,13 +119,49 @@ export default function Home({navigation}) {
 		);
 	} else {
 		return (
-			<Block flex style={styles.container}>
+			<Block style={styles.container}>
 				<StatusBar barStyle="light-content" />
-				<Block center style={{marginTop: theme.SIZES.BASE * 4}}>
-					{remoteURI == '' || remoteURI == undefined ? (
-						<Text h5>Uploading your prescription</Text>
+				<Block flex column center style={{marginTop: theme.SIZES.BASE * 4}}>
+					{submitted ? (
+						<>
+							{remoteURI == '' || remoteURI == undefined ? (
+								<Text h5>Uploading your prescription and placing your order.</Text>
+							) : (
+								<>
+									<Text h5>Order placed succesfully</Text>
+									<Text h5 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: ${remoteURI.split('/')[remoteURI.split('/').length - 1].slice(0, -4)}</Text>
+								</>
+							)}
+						</>
 					) : (
-						<Text h5>Order placed, we will shortly contact you</Text>
+						<>
+							<Block style={{width: width - theme.SIZES.BASE * 3}}>
+								<Input
+								placeholder="Address 1"
+								rounded
+								onChange={e => {setAddress({...address, address1: e.nativeEvent.text})}}
+								/>
+								<Input
+								placeholder="Address 2"
+								rounded
+								onChange={e => {setAddress({...address, address2: e.nativeEvent.text})}}
+								/>
+								<Input
+								placeholder="Landmark"
+								rounded
+								onChange={e => {setAddress({...address, landmark: e.nativeEvent.text})}}
+								/>
+							</Block>
+							<Block center style={{position: 'absolute', bottom: theme.SIZES.BASE * 3}}>
+								<Button
+								round
+								onPress={async () => {
+									setSubmitted(true)
+									setRemoteURI(await uploadImage(localURIBase64, user, address))
+								}}
+								>Submit</Button>
+							</Block>
+						</>
 					)}
 				</Block>
 			</Block>

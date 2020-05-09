@@ -1,5 +1,4 @@
 import React from 'react';
-import { useGlobal } from 'reactn'
 import { ImageBackground, StyleSheet, StatusBar, Dimensions } from 'react-native';
 import { Block, Button, Text, theme } from 'galio-framework';
 

@@ -1,43 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, StatusBar, Dimensions } from 'react-native';
-import { useGlobal } from 'reactn';
+import { StyleSheet, StatusBar, Dimensions, AsyncStorage } from 'react-native';
 import { Block, Button, Text, theme, Input } from 'galio-framework';
 import auth from '@react-native-firebase/auth';
 
-const { height, width } = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 import materialTheme from '../constants/Theme';
+import { setToken } from '../helper';
 
-export default function Login({navigation}) {
+const forceUpdate = () => useState()[1]
 
+export default function Login({navigation, route}) {
+
+	const [pressed, setPressed] = useState(false)
     const [phoneNumber, setPhoneNumber] = useState("")
-    const [initializing, setInitializing] = useState(true);
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
-	const [user, setUser] = useGlobal('user');
+	const [user, setUser] = useState();
 
-	// Handle the button press
+
 	async function signInWithPhoneNumber() {
+		setConfirm("Pressed")
 		const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
 		setConfirm(confirmation);
 	}
 	async function confirmCode() {
+		setPressed(true)
 		try {
 			await confirm.confirm(code);
 		} catch (error) {
-			console.log('Invalid code.');
+			setPressed(false)
+			alert('Invalid code.');
 		}
 	}
 
-    function onAuthStateChanged(user) {
-      setUser(user);
-      if (initializing) setInitializing(false);
+    async function onAuthStateChanged(user) {
+		await setToken(user);
+		setUser(user);
+		const { onLogin } = route.params
+		onLogin();
+		// navigation.navigate('Home')
     }
 
     useEffect(() => {
-      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-      return subscriber; // unsubscribe on unmount
-    }, []);
+      	const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+      	return subscriber; // unsubscribe on unmount
+	}, []);
+	
+	if(pressed) {
+		return (
+			<Block style={styles.container}>
+				<Block center flex space="between" style={styles.padded}>
+					<Text style={{paddingTop: theme.SIZES.BASE * 6}}>Logging you in...</Text>
+				</Block>
+			</Block>
+		)
+	}
   
 	if(!confirm) {
 		return (

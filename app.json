@@ -12,6 +12,10 @@
     ],
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.pranshumaheshwari.firebase_auth_template",
+      "versionCode": 1
+    }
   }
 }
