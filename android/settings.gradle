@@ -1,4 +1,4 @@
-rootProject.name = 'medicalDelivery'
+rootProject.name = '5mg'
 
 apply from: '../node_modules/react-native-unimodules/gradle.groovy'
 includeUnimodulesProjects()

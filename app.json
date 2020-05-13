@@ -1,9 +1,9 @@
 {
-  "name": "medicalDelivery",
-  "displayName": "medical Delivery",
+  "name": "5mg",
+  "displayName": "15mg",
   "expo": {
-    "name": "medicalDelivery",
-    "slug": "medicalDelivery",
+    "name": "5mg",
+    "slug": "5mg",
     "version": "1.0.0",
     "platforms": [
       "ios",
@@ -16,6 +16,7 @@
     "android": {
       "package": "com.pranshumaheshwari.firebase_auth_template",
       "versionCode": 1
-    }
+    },
+    "icon": "./src/assets/web_hi_res_512.png"
   }
 }

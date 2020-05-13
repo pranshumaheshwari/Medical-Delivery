@@ -65,3 +65,7 @@ buck-out/
 *.lock
 
 *.hprof
+*.jks
+*.keystore
+
+web-build/*

@@ -9,7 +9,7 @@ import { getToken } from '../helper'
 
 const { width } = Dimensions.get("screen")
 
-async function uploadImage(URI, user, address) {
+async function uploadImage(URI, user) {
 	const data = new FormData()
 	data.append('file', URI)
 	data.append('upload_preset', CLOUDINARY_API.PRESET)
@@ -21,6 +21,19 @@ async function uploadImage(URI, user, address) {
 	  	.then(data => data.secure_url)
 	  	.then(async remoteURI => {
 			let d = new Date();
+
+			let address = await firestore()
+				.collection('Users')
+				.where('uid', '==', user.uid)
+				.get()
+				.then(querySnapshot => {
+					let address
+					querySnapshot.forEach(documentSnapshot => {
+						address = documentSnapshot.data().address
+					})
+					return address
+				})
+
 			await firestore().collection('Orders').add({
 				uid: user.uid,
 				remoteURI,
@@ -111,7 +124,10 @@ export default function Home({navigation}) {
 						</Block>
 						<Button
 						style={{position: 'absolute', bottom: theme.SIZES.BASE}}
-						onPress={() => {setSelected(true)}}
+						onPress={async () => {
+							setSelected(true)
+							setRemoteURI(await uploadImage(localURIBase64, user))
+						}}
 						>Continue</Button>
 					</>
 				)}
@@ -121,46 +137,13 @@ export default function Home({navigation}) {
 		return (
 			<Block style={styles.container}>
 				<StatusBar barStyle="light-content" />
-				<Block flex column center style={{marginTop: theme.SIZES.BASE * 4}}>
-					{submitted ? (
-						<>
-							{remoteURI == '' || remoteURI == undefined ? (
-								<Text h5>Uploading your prescription and placing your order.</Text>
-							) : (
-								<>
-									<Text h5>Order placed succesfully</Text>
-									<Text h5 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: ${remoteURI.split('/')[remoteURI.split('/').length - 1].slice(0, -4)}</Text>
-								</>
-							)}
-						</>
+				<Block flex column center style={{marginTop: theme.SIZES.BASE * 3}}>
+					{remoteURI == '' || remoteURI == undefined ? (
+						<Text h5>Uploading your prescription and placing your order.</Text>
 					) : (
 						<>
-							<Block style={{width: width - theme.SIZES.BASE * 3}}>
-								<Input
-								placeholder="Address 1"
-								rounded
-								onChange={e => {setAddress({...address, address1: e.nativeEvent.text})}}
-								/>
-								<Input
-								placeholder="Address 2"
-								rounded
-								onChange={e => {setAddress({...address, address2: e.nativeEvent.text})}}
-								/>
-								<Input
-								placeholder="Landmark"
-								rounded
-								onChange={e => {setAddress({...address, landmark: e.nativeEvent.text})}}
-								/>
-							</Block>
-							<Block center style={{position: 'absolute', bottom: theme.SIZES.BASE * 3}}>
-								<Button
-								round
-								onPress={async () => {
-									setSubmitted(true)
-									setRemoteURI(await uploadImage(localURIBase64, user, address))
-								}}
-								>Submit</Button>
-							</Block>
+							<Text h5>Order placed succesfully</Text>
+							<Text h6 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: ${remoteURI.split('/')[remoteURI.split('/').length - 1].slice(0, -4)}</Text>
 						</>
 					)}
 				</Block>

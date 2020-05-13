@@ -21,7 +21,7 @@ export default function Onboarding({navigation}) {
 				<Block flex space="around" style={{ zIndex: 2 }}>
 					<Block>
 						<Block>
-							<Text color="white" size={50} style={{textAlign: 'center'}}>Rudra Medical</Text>
+							<Text color="white" size={50} style={{textAlign: 'center'}}>5 mg</Text>
 						</Block>
 						<Text size={16} color='rgba(255,255,255,0.6)' style={{textAlign: 'center'}}>
 							Medicines delivered directly at your door steps.

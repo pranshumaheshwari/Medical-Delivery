@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, StatusBar } from 'react-native'
-import { Button, Block, theme, Text } from 'galio-framework'
+import { Button, Block, theme, Text, Card } from 'galio-framework'
 import auth from '@react-native-firebase/auth'
 import { setToken } from '../helper';
-
+import { materialTheme } from '../constants'
 
 export default function ProfileScreen({navigation, route}) {
 
@@ -23,6 +23,18 @@ export default function ProfileScreen({navigation, route}) {
         <Block flex style={styles.container}>
             <StatusBar barStyle="light-content" />
             <Block flex space="between" style={styles.padded}>
+                <Block flex style={{justifyContent: 'center'}}>
+                    <Text center style={{marginTop: theme.SIZES.BASE * -10}} h4 color={materialTheme.COLORS.PRIMARY}>
+                        Reach out to us at
+                    </Text>
+                    <Block center style={{marginTop: theme.SIZES.BASE * 2}}>
+                        <Text h5> Rudra Medical & General Store </Text>
+                        <Text h5> Opposite Ghati Hospital </Text>
+                        <Text h5> Panchaki Road </Text>
+                        <Text h5> Aurangabad (MH), 431001 </Text>
+                        <Text h5> (+91) 9890185081 </Text>
+                    </Block>
+                </Block>
                 <Block center style={{position: 'absolute', bottom: 20}}>
                     <Button
                     onPress={() => {
