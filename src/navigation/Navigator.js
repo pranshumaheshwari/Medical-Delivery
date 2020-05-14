@@ -10,6 +10,7 @@ import OnBoardingScreen from '../screens/OnBoarding'
 import LoginScreen from '../screens/LoginScreen'
 import HomeScreen from '../screens/Home'
 import ProfileScreen from '../screens/Profile';
+import OTCScreen from '../screens/OTC'
 
 const OnBoardingStack = createStackNavigator()
 
@@ -46,6 +47,11 @@ function HomeStackScreen() {
             <HomeStack.Screen
             name="Home"
             component={HomeScreen}
+            options={{headerTitle: ""}}
+            />
+            <HomeStack.Screen
+            name="OTC"
+            component={OTCScreen}
             options={{headerTitle: ""}}
             />
         </HomeStack.Navigator>

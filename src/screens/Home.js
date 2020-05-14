@@ -113,7 +113,17 @@ export default function Home({navigation}) {
 					>Camera</FontAwesome.Button>
 				</Block>
 			</Block>
-				{localURI =='' ? (<></>) : (
+				{localURI =='' ? (
+				<>
+					<Text h5 style={{paddingTop: theme.SIZES.BASE * 3}}>OR</Text>
+					<Block
+					style={{paddingTop: theme.SIZES.BASE * 3}}
+					>
+						<Button
+						onPress={() => {navigation.navigate('OTC')}}
+						>Order OTC products</Button>
+					</Block>
+				</>) : (
 					<>
 						<Block center style={{paddingTop: theme.SIZES.BASE * 3}}>
 							<Text>Selected Prescription</Text>

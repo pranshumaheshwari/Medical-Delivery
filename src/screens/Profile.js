@@ -28,7 +28,7 @@ export default function ProfileScreen({navigation, route}) {
                         Reach out to us at
                     </Text>
                     <Block center style={{marginTop: theme.SIZES.BASE * 2}}>
-                        <Text h5> Rudra Medical & General Store </Text>
+                        <Text h5> Rudra Medical </Text>
                         <Text h5> Opposite Ghati Hospital </Text>
                         <Text h5> Panchaki Road </Text>
                         <Text h5> Aurangabad (MH), 431001 </Text>

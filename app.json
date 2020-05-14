@@ -1,9 +1,9 @@
 {
-  "name": "5mg",
-  "displayName": "15mg",
+  "name": "RudraMedical",
+  "displayName": "1RudraMedical",
   "expo": {
-    "name": "5mg",
-    "slug": "5mg",
+    "name": "RudraMedical",
+    "slug": "RudraMedical",
     "version": "1.0.0",
     "platforms": [
       "ios",
