@@ -6,8 +6,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { materialTheme, CLOUDINARY_API } from '../constants/'
 import { getToken } from '../helper'
+import { Tile } from 'react-native-elements'
+import Carousel, { Pagination } from 'react-native-snap-carousel'
 
-const { width } = Dimensions.get("screen")
+const { width, height } = Dimensions.get("screen")
 
 async function uploadImage(URI, user) {
 	const data = new FormData()
@@ -20,7 +22,6 @@ async function uploadImage(URI, user) {
 	}).then(res => res.json())
 	  	.then(data => data.secure_url)
 	  	.then(async remoteURI => {
-			let d = new Date();
 
 			let address = await firestore()
 				.collection('Users')
@@ -39,7 +40,8 @@ async function uploadImage(URI, user) {
 				remoteURI,
 				contact: user.phoneNumber,
 				address,
-				orderDate: `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}  ${d.getHours()}:${d.getMinutes()}`
+				orderDate: firestore.FieldValue.serverTimestamp(),
+				type: 'prescription'
 			})
 			return remoteURI;
 	  })
@@ -53,9 +55,27 @@ export default function Home({navigation}) {
 	const [localURI, setLocalURI] = useState('')
 	const [localURIBase64, setLocalURIBase64] = useState('')
 	const [selected, setSelected] = useState(false)
-	const [submitted, setSubmitted] = useState(false)
 	const [remoteURI, setRemoteURI] = useState('')
-	const [address, setAddress] = useState({})
+	const [index, setIndex] = useState(0)
+	const [carouselItems, _] = useState([
+		{
+			title: "Free Sanitizer bottle",
+			caption:"on orders above ₹500",
+		},
+		{
+			title: "All corona related pharmaceutical products available",
+			caption:"",
+		},
+		{
+			img: require("../assets/1.png"),
+		},
+		{
+			img: require("../assets/2.png"),
+		},
+		{
+			img: require("../assets/3.png"),
+		},
+	])
 
 	useEffect(() => {
 		getToken().then(user => {
@@ -63,11 +83,59 @@ export default function Home({navigation}) {
 		})
 	}, [])
 
+	function _renderItem({ item }) {
+		if(item.img) {
+			return (
+				<>
+					<Tile
+						featured
+						imageSrc={item.img}
+						imageContainerStyle={styles.imgTile}
+						height={height / 3}
+					/>
+					<Pagination
+					activeDotIndex={index}
+					dotsLength={carouselItems.length}
+					/>
+				</>
+			);
+		} else {
+			return (
+				<>
+					<Tile
+						featured
+						title={item.title}
+						caption={item.caption}
+						imageContainerStyle={styles.tile}
+						height={height / 4}
+					/>
+					<Pagination
+					activeDotIndex={index}
+					dotsLength={carouselItems.length}
+					/>
+				</>
+			)
+		}
+	}
+
 	if(!selected) {
 		return (
 		  <Block flex style={styles.container}>
 			<StatusBar barStyle="light-content" />
-			<Block center style={{marginTop: theme.SIZES.BASE * 4}}>
+			<Block style={{height: height / 2.5, paddingTop: theme.SIZES.BASE * 2}}>
+				<Carousel
+					layout={"default"}
+					data={carouselItems}
+					sliderWidth={width}
+					itemWidth={width - theme.SIZES.BASE}
+					renderItem={_renderItem}
+					loop={true}
+					autoplay={true}
+					lockScrollWhileSnapping={true}
+					onSnapToItem = { i => setIndex(i)}
+				/>
+			</Block>
+			<Block center>
 				<Text h5>Upload a prescription to order</Text>
 				<Block row space="evenly" style={{width: width - theme.SIZES.BASE * 5, paddingTop: theme.SIZES.BASE}}>
 					<FontAwesome.Button
@@ -125,11 +193,11 @@ export default function Home({navigation}) {
 					</Block>
 				</>) : (
 					<>
-						<Block center style={{paddingTop: theme.SIZES.BASE * 3}}>
+						<Block center style={{paddingTop: theme.SIZES.BASE}}>
 							<Text>Selected Prescription</Text>
 							<Image
 							source={{uri: localURI}}
-							style={{width: 250, height: 300, marginTop: theme.SIZES.BASE}}
+							style={{width: width / 2, height: height / 4, marginTop: theme.SIZES.BASE}}
 							/> 
 						</Block>
 						<Button
@@ -149,7 +217,10 @@ export default function Home({navigation}) {
 				<StatusBar barStyle="light-content" />
 				<Block flex column center style={{marginTop: theme.SIZES.BASE * 3}}>
 					{remoteURI == '' || remoteURI == undefined ? (
-						<Text h5>Uploading your prescription and placing your order.</Text>
+						<>
+							<Text h5>Uploading your prescription</Text>
+							<Text h5>and placing your order.</Text>
+						</>
 					) : (
 						<>
 							<Text h5>Order placed succesfully</Text>
@@ -169,4 +240,10 @@ const styles = StyleSheet.create({
 	flex: 1, 
     alignItems: 'center',
   },
+  imgTile: {
+
+  },
+  tile: {
+	  backgroundColor: theme.COLORS.BLACK,
+  }
 });

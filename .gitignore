@@ -69,3 +69,6 @@ buck-out/
 *.keystore
 
 web-build/*
+
+GoogleService-Info.plist
+package-lock.json

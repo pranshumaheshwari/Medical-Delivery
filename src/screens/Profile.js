@@ -32,7 +32,7 @@ export default function ProfileScreen({navigation, route}) {
                         <Text h5> Opposite Ghati Hospital </Text>
                         <Text h5> Panchaki Road </Text>
                         <Text h5> Aurangabad (MH), 431001 </Text>
-                        <Text h5> (+91) 9890185081 </Text>
+                        <Text h5> (0240) 2326681 </Text>
                     </Block>
                 </Block>
                 <Block center style={{position: 'absolute', bottom: 20}}>

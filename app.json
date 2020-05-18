@@ -17,6 +17,10 @@
       "package": "com.pranshumaheshwari.firebase_auth_template",
       "versionCode": 1
     },
+    "ios": {
+      "bundleIdentifier": "com.pranshumaheshwari.RudraMedical",
+      "buildNumber": "1.0.0"
+    },
     "icon": "./src/assets/web_hi_res_512.png"
   }
 }

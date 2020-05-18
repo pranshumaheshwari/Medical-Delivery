@@ -27,6 +27,7 @@ async function order(user, data) {
         contact: user.phoneNumber,
         address,
         orderDate: firestore.FieldValue.serverTimestamp(),
+        type: 'OTC',
     })
     .then(documentSnapshot => documentSnapshot.id)
 
@@ -82,7 +83,7 @@ export default function OTCScreen({navigation}) {
                 <StatusBar barStyle="light-content" />
                 <Block flex column center style={{marginTop: theme.SIZES.BASE * 3}}>
                     {id == '' || id == undefined ? (
-                        <Text h5>Uploading your prescription and placing your order.</Text>
+                        <Text h5>Placing your order...</Text>
                     ) : (
                         <>
                             <Text h5>Order placed succesfully</Text>

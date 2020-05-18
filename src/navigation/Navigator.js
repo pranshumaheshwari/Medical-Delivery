@@ -47,7 +47,7 @@ function HomeStackScreen() {
             <HomeStack.Screen
             name="Home"
             component={HomeScreen}
-            options={{headerTitle: ""}}
+            options={{headerShown: false}}
             />
             <HomeStack.Screen
             name="OTC"

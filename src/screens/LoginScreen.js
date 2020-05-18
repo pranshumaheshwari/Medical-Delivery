@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, StatusBar, Dimensions, AsyncStorage } from 'react-native';
+import { StyleSheet, StatusBar, Dimensions, ActivityIndicator } from 'react-native';
 import { Block, Button, Text, theme, Input } from 'galio-framework';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -12,6 +12,7 @@ import { setToken } from '../helper';
 export default function Login({navigation, route}) {
 
 	const [pressed, setPressed] = useState(false)
+	const [pressed1, setPressed1] = useState(false)
     const [phoneNumber, setPhoneNumber] = useState("")
     const [confirm, setConfirm] = useState(null);
     const [code, setCode] = useState('');
@@ -74,6 +75,15 @@ export default function Login({navigation, route}) {
       	return subscriber; // unsubscribe on unmount
 	}, []);
 
+	if(pressed1) {
+		<Block style={styles.container}>
+			<Block center flex space="between" style={styles.padded}>
+				<ActivityIndicator style={{paddingTop: theme.SIZES.BASE * 6}} size="large" color={materialTheme.COLORS.ACTIVE} />
+				<Text style={{paddingTop: theme.SIZES.BASE * 6}}>Saving your info for future use, hang on...</Text>
+			</Block>
+		</Block>
+	}
+
 	if(isNameSet) {
 		return (
 			<Block flex style={styles.container}>
@@ -98,6 +108,7 @@ export default function Login({navigation, route}) {
 							<Button
 							round
 							onPress={async () => {
+								setPressed1(true)
 								await submitAddress()
 							}}
 							>Submit</Button>
@@ -147,6 +158,7 @@ export default function Login({navigation, route}) {
 		return (
 			<Block style={styles.container}>
 				<Block center flex space="between" style={styles.padded}>
+					<ActivityIndicator style={{paddingTop: theme.SIZES.BASE * 6}} size="large" color={materialTheme.COLORS.ACTIVE} />
 					<Text style={{paddingTop: theme.SIZES.BASE * 6}}>Logging you in...</Text>
 				</Block>
 			</Block>
