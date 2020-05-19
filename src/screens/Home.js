@@ -7,7 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 import { materialTheme, CLOUDINARY_API } from '../constants/'
 import { getToken } from '../helper'
 import { Tile } from 'react-native-elements'
-import Carousel, { Pagination } from 'react-native-snap-carousel'
+import Carousel from 'react-native-snap-carousel'
 
 const { width, height } = Dimensions.get("screen")
 
@@ -56,7 +56,6 @@ export default function Home({navigation}) {
 	const [localURIBase64, setLocalURIBase64] = useState('')
 	const [selected, setSelected] = useState(false)
 	const [remoteURI, setRemoteURI] = useState('')
-	const [index, setIndex] = useState(0)
 	const [carouselItems, _] = useState([
 		{
 			title: "Free Sanitizer bottle",
@@ -86,34 +85,25 @@ export default function Home({navigation}) {
 	function _renderItem({ item }) {
 		if(item.img) {
 			return (
-				<>
-					<Tile
-						featured
-						imageSrc={item.img}
-						imageContainerStyle={styles.imgTile}
-						height={height / 3}
-					/>
-					<Pagination
-					activeDotIndex={index}
-					dotsLength={carouselItems.length}
-					/>
-				</>
+				<Tile
+					featured
+					imageSrc={item.img}
+					imageContainerStyle={styles.imgTile}
+					imageProps={{
+						resizeMode: "contain"
+					}}
+					height={height / 4}
+				/>
 			);
 		} else {
 			return (
-				<>
-					<Tile
-						featured
-						title={item.title}
-						caption={item.caption}
-						imageContainerStyle={styles.tile}
-						height={height / 4}
-					/>
-					<Pagination
-					activeDotIndex={index}
-					dotsLength={carouselItems.length}
-					/>
-				</>
+				<Tile
+					featured
+					title={item.title}
+					caption={item.caption}
+					imageContainerStyle={styles.tile}
+					height={height / 4}
+				/>
 			)
 		}
 	}
@@ -132,7 +122,6 @@ export default function Home({navigation}) {
 					loop={true}
 					autoplay={true}
 					lockScrollWhileSnapping={true}
-					onSnapToItem = { i => setIndex(i)}
 				/>
 			</Block>
 			<Block center>

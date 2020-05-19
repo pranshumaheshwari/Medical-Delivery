@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, StatusBar } from 'react-native'
+import { StyleSheet, StatusBar, ActivityIndicator } from 'react-native'
 import { Button, Block, theme, Text, Card } from 'galio-framework'
 import auth from '@react-native-firebase/auth'
 import { setToken } from '../helper';
@@ -13,6 +13,7 @@ export default function ProfileScreen({navigation, route}) {
         return (
             <Block style={styles.container}>
 				<Block center flex space="between" style={styles.padded}>
+    				<ActivityIndicator style={{paddingTop: theme.SIZES.BASE * 6}} size="large" color={materialTheme.COLORS.ACTIVE} />
 					<Text style={{paddingTop: theme.SIZES.BASE * 6}}>Logging you out...</Text>
 				</Block>
 			</Block>
