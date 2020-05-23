@@ -1,4 +1,4 @@
-package com.pranshumaheshwari.firebase_auth_template;
+package com.pmapps.rudra_medical;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { materialTheme, CLOUDINARY_API } from '../constants/'
-import { getToken } from '../helper'
+import { getToken, getOrderNumber } from '../helper'
 import { Tile } from 'react-native-elements'
 import Carousel from 'react-native-snap-carousel'
 
@@ -16,7 +16,7 @@ async function uploadImage(URI, user) {
 	data.append('file', URI)
 	data.append('upload_preset', CLOUDINARY_API.PRESET)
 
-	let remoteURI = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_API.NAME}/upload`, {
+	let dd = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_API.NAME}/upload`, {
 		method: "post",
       	body: data
 	}).then(res => res.json())
@@ -35,18 +35,25 @@ async function uploadImage(URI, user) {
 					return address
 				})
 
+			let orderNo = await getOrderNumber()
+
 			await firestore().collection('Orders').add({
 				uid: user.uid,
 				remoteURI,
 				contact: user.phoneNumber,
 				address,
 				orderDate: firestore.FieldValue.serverTimestamp(),
-				type: 'prescription'
+				type: 'prescription',
+				status: 'Pending',
+				orderNo,
 			})
-			return remoteURI;
+			return {
+				remoteURI,
+				orderNo
+			};
 	  })
 	  .catch(e => alert(e));
-	return remoteURI;
+	return dd;
 }
 
 export default function Home({navigation}) {
@@ -56,6 +63,7 @@ export default function Home({navigation}) {
 	const [localURIBase64, setLocalURIBase64] = useState('')
 	const [selected, setSelected] = useState(false)
 	const [remoteURI, setRemoteURI] = useState('')
+	const [orderID, setOrderID] = useState('')
 	const [carouselItems, _] = useState([
 		{
 			title: "Free Sanitizer bottle",
@@ -193,7 +201,9 @@ export default function Home({navigation}) {
 						style={{position: 'absolute', bottom: theme.SIZES.BASE}}
 						onPress={async () => {
 							setSelected(true)
-							setRemoteURI(await uploadImage(localURIBase64, user))
+							let data = await uploadImage(localURIBase64, user)
+							setRemoteURI(data.remoteURI)
+							setOrderID(data.orderNo)
 						}}
 						>Continue</Button>
 					</>
@@ -213,7 +223,7 @@ export default function Home({navigation}) {
 					) : (
 						<>
 							<Text h5>Order placed succesfully</Text>
-							<Text h6 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: ${remoteURI.split('/')[remoteURI.split('/').length - 1].slice(0, -4)}</Text>
+							<Text h6 style={{marginTop: theme.SIZES.BASE * 4}}>Your order ID is: {orderID}</Text>
 						</>
 					)}
 				</Block>

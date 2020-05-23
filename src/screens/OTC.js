@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StatusBar, StyleSheet, TextInput, Dimensions } from 'react-native'
 import { Block, Text, theme, Button } from 'galio-framework';
-import { getToken } from '../helper'
+import { getToken, getOrderNumber } from '../helper'
 import firestore from '@react-native-firebase/firestore';
 
 const { width } = Dimensions.get("screen")
@@ -18,9 +18,11 @@ async function order(user, data) {
 						address = documentSnapshot.data().address
 					})
 					return address
-				})
+                })
+                
+    let orderNo = await getOrderNumber()
 
-    return await firestore().collection('Orders')
+    await firestore().collection('Orders')
     .add({
         uid: user.uid,
         data,
@@ -28,8 +30,12 @@ async function order(user, data) {
         address,
         orderDate: firestore.FieldValue.serverTimestamp(),
         type: 'OTC',
-    })
-    .then(documentSnapshot => documentSnapshot.id)
+        status: 'Pending',
+        orderNo,
+    })  
+    // .then(documentSnapshot => documentSnapshot.id)
+
+    return orderNo
 
 }
 
@@ -87,7 +93,7 @@ export default function OTCScreen({navigation}) {
                     ) : (
                         <>
                             <Text h5>Order placed succesfully</Text>
-                            <Text h6 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: ${id}</Text>
+                            <Text h6 style={{marginTop: theme.SIZES.BASE * 4}}>Your order id is: {id}</Text>
                         </>
                     )}
                 </Block>

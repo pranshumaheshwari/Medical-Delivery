@@ -1,4 +1,4 @@
-package com.pranshumaheshwari.firebase_auth_template.generated;
+package com.pmapps.rudra_medical.generated;
 
 import java.util.Arrays;
 import java.util.List;

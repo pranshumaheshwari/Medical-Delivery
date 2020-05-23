@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native'
+import firestore from '@react-native-firebase/firestore'
 
 async function getToken() {
     return await AsyncStorage.getItem('user')
@@ -11,7 +12,15 @@ async function setToken(user) {
     .catch(e => console.log(e))
 }
 
+async function getOrderNumber() {
+    return await firestore()
+        .collection('Orders')
+        .get()
+        .then(querySnapshot => querySnapshot.size)
+}
+
 export {
     getToken,
     setToken,
+    getOrderNumber,
 }
