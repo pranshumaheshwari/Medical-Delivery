@@ -72,5 +72,3 @@ web-build/*
 
 GoogleService-Info.plist
 package-lock.json
-
-privacy-policy.html

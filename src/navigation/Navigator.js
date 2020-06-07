@@ -7,7 +7,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import OnBoardingScreen from '../screens/OnBoarding'
-import LoginScreen from '../screens/LoginScreen'
+import LoginScreen from '../screens/Login'
 import HomeScreen from '../screens/Home'
 import ProfileScreen from '../screens/Profile';
 import OTCScreen from '../screens/OTC'
